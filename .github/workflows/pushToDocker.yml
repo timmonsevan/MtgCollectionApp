@@ -34,6 +34,8 @@ jobs:
       uses: docker/build-push-action@v6.15.0
       with: 
         file: ./demo/Dockerfile
+        push: true
+        tags: ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120:latest
         
       
      
