@@ -2,12 +2,15 @@
 name: CI
 
 on:
+  workflow_dispatch:
   push:
+    branches:
+      - "main"
     tags: 
       - "*"
 env:
   TAG_NAME: ${{ github.event.release.tag_name }}
-  DOCKER_METADATA_SET_OUTPUT_ENV: true
+  
 jobs:
 
   build:
@@ -32,13 +35,12 @@ jobs:
         images: |
           name=${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120
         tags: |
-          type=semver,pattern={{major}},value=${{ github.event.release.tag_name }}
-          type=semver,pattern={{major}}.{{minor}},value=${{ github.event.release.tag_name }}
+          type=semver,pattern={{major}},value=${{ env.TAG_NAME }}
+          type=semver,pattern={{major}}.{{minor}},value=${{ env.TAG_NAME }}
     
     - name: build container with latest, major and major.minor tags
       uses: docker/build-push-action@v6.15.0
       with: 
-        context: .
         file: ./demo/Dockerfile
         push: true
         tags: ${{ steps.meta.outputs.tags }}, ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120:latest
