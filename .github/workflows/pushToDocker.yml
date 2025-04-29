@@ -7,18 +7,16 @@ on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     tags: 
-      - '*'
+      - 'v*'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
   # parse for tag name
 env:
-  TAG_NAME: ${github.event.release.tag_name}
+  DOCKER_METADATA_SET_OUTPUT_ENV: true
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # build the latest tagged container
-  build-latest:
-  # check if tag is latest
-    if: ${{ env.TAG_NAME == "latest" }}
+  build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -32,60 +30,23 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_TOKEN }}
-    # build the container and push to docker hub
-    - name: build container
-      uses: docker/build-push-action@v6.15.0
-      with: 
-        file: ./demo/Dockerfile
-        push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120:${{ env.TAG_NAME }}
-  # build a major tagged container
-  build-major:
-    # check if tag is major
-    if: ${{ env.TAG_NAME == [0-9]+$ }}
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-    steps:
-    # checkout code
-    - name: Checkout code
-      uses: actions/checkout@v4
-    # login to Docker
-    - name: Docker Login
-      uses: docker/login-action@v3.4.0
+
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v5.7.0
       with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_TOKEN }}
-    # build the container and push to docker hub
-    - name: build container
-      uses: docker/build-push-action@v6.15.0
-      with: 
-        file: ./demo/Dockerfile
-        push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120:${{ env.TAG_NAME }}
-  # build a major.minor tagged container
-  build-major-minor:
-    # check if tag is major.minor
-    if: ${{ env.TAG_NAME == [0-9]+\.[0-9]+$ }}
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-    steps:
-    # checkout code
-    - name: Checkout code
-      uses: actions/checkout@v4
-    # login to Docker
-    - name: Docker Login
-      uses: docker/login-action@v3.4.0
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_TOKEN }}
-    # build the container and push to docker hub
-    - name: build container
-      uses: docker/build-push-action@v6.15.0
-      with: 
-        file: ./demo/Dockerfile
-        push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120:${{ env.TAG_NAME }}
+        images: ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120
+        tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}]
+            type=semver,pattern={{major}}.{{minor}}
     
-        
-      
-     
+    # build the container and push to docker hub
+    - name: build container with latest, major and major.minor tags
+      uses: docker/build-push-action@v6.15.0
+      with: 
+        file: ./demo/Dockerfile
+        push: true
+        tags: ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120:latest,
+              ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120:v{{major}},
+              ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120:v{{major}}.{{minor}}
