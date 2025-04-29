@@ -31,7 +31,6 @@ jobs:
       id: meta
       uses: docker/metadata-action@v5.7.0
       with:
-        images: ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120
         tags: |
             type=ref,event=branch
             type=ref,event=pr
