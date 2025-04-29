@@ -1,11 +1,8 @@
 
 name: CI
 
-on: 
-  workflow_dispatch:
+on:
   push:
-    branches:
-      - "main"
     tags: 
       - "*"
 env:
@@ -44,4 +41,4 @@ jobs:
         context: .
         file: ./demo/Dockerfile
         push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120:${{ steps.meta.outputs.tags }}, ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120:latest
+        tags: ${{ steps.meta.outputs.tags }}, ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120:latest
