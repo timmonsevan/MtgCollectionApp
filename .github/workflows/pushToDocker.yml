@@ -32,7 +32,6 @@ jobs:
       uses: docker/metadata-action@v5.7.0
       with:
         tags: |
-            type=semver,pattern=latest
             type=semver,pattern={{major}]
             type=semver,pattern={{major}}.{{minor}}
     
@@ -43,4 +42,4 @@ jobs:
         context: .
         file: ./demo/Dockerfile
         push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120:${{ steps.meta.outputs.tags }}
+        tags: ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120:${{ steps.meta.outputs.tags }}, ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120:latest
