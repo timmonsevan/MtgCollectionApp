@@ -42,6 +42,7 @@ jobs:
     - name: build container with latest, major and major.minor tags
       uses: docker/build-push-action@v6.15.0
       with: 
+        context: .
         file: ./demo/Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120:${{ steps.meta.outputs.tags }}
