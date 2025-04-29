@@ -10,6 +10,7 @@ on:
       - "v*.*.*"
 env:
   TAG_NAME: ${{ github.event.release.tag_name }}
+  DOCKER_METADATA_SET_OUTPUT_ENV: true
 jobs:
 
   build:
@@ -32,10 +33,10 @@ jobs:
       uses: docker/metadata-action@v5.7.0
       with:
         images: |
-          ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120
+          name=${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120
         tags: |
-          type=semver,pattern={{major}},value=${{ env.TAG_NAME }}
-          type=semver,pattern={{major}}.{{minor}},value=${{ env.TAG_NAME }}
+          type=semver,pattern={{major}},value=${{ env.TAG_NAME }},enable=true
+          type=semver,pattern={{major}}.{{minor}},value=${{ env.TAG_NAME }},enable=true
     
     - name: build container with latest, major and major.minor tags
       uses: docker/build-push-action@v6.15.0
