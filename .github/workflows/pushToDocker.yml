@@ -32,7 +32,9 @@ jobs:
       uses: docker/metadata-action@v5.7.0
       with:
         tags: |
-            type=semver,pattern={{major}]
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{major}}
             type=semver,pattern={{major}}.{{minor}}
     
     # build the container and push to docker hub
