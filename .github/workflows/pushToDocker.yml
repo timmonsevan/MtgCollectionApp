@@ -7,7 +7,7 @@ on:
     branches:
       - "main"
     tags: 
-      - "v*.*.*"
+      - "*"
 env:
   TAG_NAME: ${{ github.event.release.tag_name }}
   DOCKER_METADATA_SET_OUTPUT_ENV: true
@@ -35,8 +35,8 @@ jobs:
         images: |
           name=${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120
         tags: |
-          type=semver,pattern={{major}},value=${{ env.TAG_NAME }},enable=true
-          type=semver,pattern={{major}}.{{minor}},value=${{ env.TAG_NAME }},enable=true
+          type=semver,pattern={{major}},value=${{ github.event.release.tag_name }}
+          type=semver,pattern={{major}}.{{minor}},value=${{ github.event.release.tag_name }}
     
     - name: build container with latest, major and major.minor tags
       uses: docker/build-push-action@v6.15.0
