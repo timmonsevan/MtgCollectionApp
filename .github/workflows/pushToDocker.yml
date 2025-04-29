@@ -10,7 +10,7 @@ on:
     tags: 
       - 'v*'
 env:
-  TAG_NAME: ${{ github.event.release.tag_name }}
+  TAG_NAME: ${{ github.ref_name }}
 jobs:
   # build the latest tagged container
   build:
