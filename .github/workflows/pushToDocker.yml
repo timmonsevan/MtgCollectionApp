@@ -1,21 +1,16 @@
-# This is a basic workflow to help you get started with Actions
 
 name: CI
 
-# Controls when the workflow will run
 on: 
-  # Triggers the workflow on push or pull request events but only for the "main" branch
+  # Triggers the workflow on push request events but only for the "main" branch
   push:
     branches: 
       - "main"
     tags: 
       - 'v*'
-  # Allows you to run this workflow manually from the Actions tab
+  
   workflow_dispatch:
-  # parse for tag name
-env:
-  DOCKER_METADATA_SET_OUTPUT_ENV: true
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+
 jobs:
   # build the latest tagged container
   build:
@@ -50,5 +45,5 @@ jobs:
         file: ./demo/Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120:latest,
-              ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120:v{{major}},
-              ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120:v{{major}}.{{minor}}
+              ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120:{{major}},
+              ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120:{{major}}.{{minor}}
