@@ -31,9 +31,11 @@ jobs:
       id: meta
       uses: docker/metadata-action@v5.7.0
       with:
+        images: |
+          ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120
         tags: |
-            type=semver,pattern={{major}}
-            type=semver,pattern={{major}}.{{minor}}
+          type=semver,pattern={{major}}
+          type=semver,pattern={{major}}.{{minor}}
     
     # build the container and push to docker hub
     - name: build container with latest, major and major.minor tags
