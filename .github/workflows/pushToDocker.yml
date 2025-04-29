@@ -35,8 +35,8 @@ jobs:
         images: |
           ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120
         tags: |
-          type=semver,pattern={{major}},value=$TAG_NAME
-          type=semver,pattern={{major}}.{{minor}},value=$TAG_NAME
+          type=semver,pattern={{major}},value=${{ env.TAG_NAME }}
+          type=semver,pattern={{major}}.{{minor}},value=${{ env.TAG_NAME }}
     
     # build the container and push to docker hub
     - name: build container with latest, major and major.minor tags
