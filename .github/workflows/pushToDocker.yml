@@ -44,4 +44,4 @@ jobs:
       with: 
         file: ./demo/Dockerfile
         push: true
-        tags: ${{ steps.meta.outputs.tags }}
+        tags: ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120:${{ steps.meta.outputs.tags }}
