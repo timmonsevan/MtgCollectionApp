@@ -14,7 +14,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./my.cnf:/etc/mysql/my.cnf
+      - db_data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
@@ -33,6 +33,8 @@ services:
       MYSQL_ROOT_PASSWORD: root
     networks:
       - app-network
+    depends_on:
+      - mysql
     deploy:
       replicas: 1
       placement:
