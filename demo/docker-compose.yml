@@ -12,7 +12,7 @@ services:
       placement:
         constraints: [node.role == manager]
 
-  spring-boot-app:
+  app:
     image: timmonsevan/timmons-ceg3120:latest
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/mtg_collection_tracker_db
