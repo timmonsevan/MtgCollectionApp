@@ -2,41 +2,31 @@ version: '3.8'
 
 services:
   mysql:
-    image: mysql:latest
+    image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: root$IX66
       MYSQL_DATABASE: mtg_collection_tracker_db
-    volumes:
-      - mysql-data:/var/lib/mysql
     networks:
-      - mtg-network
+      - app-network
     deploy:
       placement:
         constraints: [node.role == manager]
-      restart_policy:
-        condition: on-failure
 
-  mtg-app:
+  spring-boot-app:
     image: timmonsevan/timmons-ceg3120:latest
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/mtg_collection_tracker_db
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/mydb
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root$IX66
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-    ports:
-      - "5000:5000"
     depends_on:
       - mysql
     networks:
-      - mtg-network
+      - app-network
     deploy:
       replicas: 1
-      restart_policy:
-        condition: on-failure
-
-volumes:
-  mysql-data:
+      placement:
+        constraints: [node.role == worker]
 
 networks:
-  mtg-network:
-    external: true
+  app-network:
+    driver: overlay
