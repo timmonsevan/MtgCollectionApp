@@ -1,7 +1,7 @@
 [
     {
-      "id": "deploy-container",
-      "execute-command": "/home/ubuntu/MtgCollectionApp/deployment/deploy.sh",
+      "id": "redeploy-webhook",
+      "execute-command": "/bin/bash/deploy.sh",
       "command-working-directory": "/home/ubuntu/MtgCollectionApp",
       "pass-arguments-to-command": [
         {
@@ -15,7 +15,7 @@
           {
             "match": {
               "type": "payload-hmac-sha256",
-              "secret": "your-shared-secret",
+              "secret": "$ix$ix$ix",
               "parameter": {
                 "source": "header",
                 "name": "X-Hub-Signature-256"
