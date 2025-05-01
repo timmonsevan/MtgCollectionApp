@@ -2,13 +2,27 @@ package com.MTGCollectionApp.demo.service;
 import com.MTGCollectionApp.demo.dao.CardDAO;
 import com.MTGCollectionApp.demo.entity.DatabaseCard;
 import com.MTGCollectionApp.demo.exceptions.CardNotFoundException;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import io.magicthegathering.javasdk.api.CardAPI;
 import io.magicthegathering.javasdk.resource.Card;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriUtils;
+
+import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * service methods for controllers
@@ -19,10 +33,12 @@ import java.util.List;
 public class CardServiceImpl implements CardService {
 
     private final CardDAO cardDAO;
+    private final RestTemplate restTemplate;
 
     @Autowired
-    public CardServiceImpl(CardDAO theCardDAO) {
+    public CardServiceImpl(CardDAO theCardDAO, RestTemplate restTemplate) {
         this.cardDAO = theCardDAO;
+        this.restTemplate = restTemplate;
     }
 
     /**
@@ -110,11 +126,10 @@ public class CardServiceImpl implements CardService {
      */
     @Override
     @Transactional
-    public String addNewCard(String cardName, String numCards) throws ClassNotFoundException {
+    public String addNewCard(String cardName, String numCards) throws ClassNotFoundException, ClassCastException {
 
         int quantity;
-        List<String> filters = new ArrayList<>();
-        filters.add(cardName);
+        String url = "https://api.magicthegathering.io/v1/cards?name=" + UriUtils.encode(cardName, StandardCharsets.UTF_8);
 
         if (cardName != null && numCards != null) {
 
@@ -146,8 +161,17 @@ public class CardServiceImpl implements CardService {
             }
 
             try {
-                List<Card> cards = CardAPI.getAllCards(filters);
+                ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+                List<Card> cards = new ArrayList<>();
 
+                if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                    JsonObject jsonObject = JsonParser.parseString(response.getBody()).getAsJsonObject();
+                    JsonArray cardsArray = jsonObject.getAsJsonArray("cards");
+
+                    Type cardListType = new TypeToken<List<Card>>() {
+                    }.getType();
+                    cards = new Gson().fromJson(cardsArray, cardListType);
+                }
                 for (Card card : cards) {
                     if (card.getName().equalsIgnoreCase(cardName) && card.getMultiverseid() > 0) {
                         DatabaseCard tempDatabaseCard = new DatabaseCard(card, quantity);
@@ -174,8 +198,7 @@ public class CardServiceImpl implements CardService {
     public String addNewCard(String cardName, String numCards, String set) throws ClassNotFoundException {
 
         int quantity;
-        List<String> filters = new ArrayList<>();
-        filters.add(cardName);
+        String url = "https://api.magicthegathering.io/v1/cards?name=" + UriUtils.encode(cardName, StandardCharsets.UTF_8);
 
         if (cardName != null && numCards != null && set != null) {
 
@@ -207,7 +230,17 @@ public class CardServiceImpl implements CardService {
             } catch (Exception ignored) {
             }
 
-            List<Card> cards = CardAPI.getAllCards(filters);
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+            List<Card> cards = new ArrayList<>();
+
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                JsonObject jsonObject = JsonParser.parseString(response.getBody()).getAsJsonObject();
+                JsonArray cardsArray = jsonObject.getAsJsonArray("cards");
+
+                Type cardListType = new TypeToken<List<Card>>() {
+                }.getType();
+                cards = new Gson().fromJson(cardsArray, cardListType);
+            }
 
             for (Card card : cards) {
                 if (card.getName().equalsIgnoreCase(cardName) && card.getSet().equalsIgnoreCase(set)) {
@@ -233,8 +266,7 @@ public class CardServiceImpl implements CardService {
     public String updateCard(String cardName, String numCards) throws ClassNotFoundException {
 
         int quantity;
-        List<String> filters = new ArrayList<>();
-        filters.add(cardName);
+        String url = "https://api.magicthegathering.io/v1/cards?name=" + UriUtils.encode(cardName, StandardCharsets.UTF_8);
 
         if (cardName != null && numCards != null) {
 
@@ -263,7 +295,17 @@ public class CardServiceImpl implements CardService {
             query = new ArrayList<>(cardDAO.findByName(cardName));
 
             try {
-                List<Card> cards = CardAPI.getAllCards(filters);
+                ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+                List<Card> cards = new ArrayList<>();
+
+                if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                    JsonObject jsonObject = JsonParser.parseString(response.getBody()).getAsJsonObject();
+                    JsonArray cardsArray = jsonObject.getAsJsonArray("cards");
+
+                    Type cardListType = new TypeToken<List<Card>>() {
+                    }.getType();
+                    cards = new Gson().fromJson(cardsArray, cardListType);
+                }
 
                 for (DatabaseCard databaseCard : query) {
                     if (databaseCard.getName().equalsIgnoreCase(cardName)) {
@@ -297,8 +339,7 @@ public class CardServiceImpl implements CardService {
     public String updateCard(String cardName, String numCards, String set) throws ClassNotFoundException {
 
         int quantity;
-        List<String> filters = new ArrayList<>();
-        filters.add(cardName);
+        String url = "https://api.magicthegathering.io/v1/cards?name=" + UriUtils.encode(cardName, StandardCharsets.UTF_8);
 
         if (cardName != null && numCards != null && set != null) {
 
@@ -327,7 +368,17 @@ public class CardServiceImpl implements CardService {
             query = new ArrayList<>(cardDAO.findByName(cardName));
 
             try {
-                List<Card> cards = CardAPI.getAllCards(filters);
+                ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+                List<Card> cards = new ArrayList<>();
+
+                if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                    JsonObject jsonObject = JsonParser.parseString(response.getBody()).getAsJsonObject();
+                    JsonArray cardsArray = jsonObject.getAsJsonArray("cards");
+
+                    Type cardListType = new TypeToken<List<Card>>() {
+                    }.getType();
+                    cards = new Gson().fromJson(cardsArray, cardListType);
+                }
 
                 for (DatabaseCard databaseCard : query) {
                     if (databaseCard.getName().equalsIgnoreCase(cardName)) {
@@ -361,8 +412,7 @@ public class CardServiceImpl implements CardService {
     @Transactional
     public String removeCardFromCollection(String cardName) {
 
-        List<String> filters = new ArrayList<>();
-        filters.add(cardName);
+        String url = "https://api.magicthegathering.io/v1/cards?name=" + UriUtils.encode(cardName, StandardCharsets.UTF_8);
 
         if (cardName != null) {
 
@@ -381,7 +431,17 @@ public class CardServiceImpl implements CardService {
             query = new ArrayList<>(cardDAO.findByName(cardName));
 
             try {
-                List<Card> cards = CardAPI.getAllCards(filters);
+                ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+                List<Card> cards = new ArrayList<>();
+
+                if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                    JsonObject jsonObject = JsonParser.parseString(response.getBody()).getAsJsonObject();
+                    JsonArray cardsArray = jsonObject.getAsJsonArray("cards");
+
+                    Type cardListType = new TypeToken<List<Card>>() {
+                    }.getType();
+                    cards = new Gson().fromJson(cardsArray, cardListType);
+                }
 
                 for (DatabaseCard databaseCard : query) {
                     if (databaseCard.getName().equalsIgnoreCase(cardName)) {
