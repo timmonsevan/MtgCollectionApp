@@ -51,4 +51,4 @@ jobs:
 
     - name: SSH into EC2 and run commands
       run: |
-        ssh -i ~/.ssh/id_rsa ubuntu@${{ vars.MYAPP_IP }}.compute.amazonaws.com "echo 'Connected to EC2!' && 'bash -s' < ./deployment/deploy.sh MtgCollectionApp"
+        ssh -i ~/.ssh/id_rsa ubuntu@${{ vars.MYAPP_IP }} "echo 'Connected to EC2!' && 'bash -s' < ./deployment/deploy.sh MtgCollectionApp"
