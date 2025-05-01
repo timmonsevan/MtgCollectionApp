@@ -6,7 +6,7 @@ on:
     tags: 
       - "*"
 env:
-  TAG_NAME: ${{ github.event.release.tag_name }}
+  TAG_NAME: ${{ github.ref_name }}
   
 jobs:
 
@@ -51,4 +51,4 @@ jobs:
 
     - name: SSH into EC2 and run commands
       run: |
-        ssh -i ~/.ssh/id_rsa ubuntu@${{ vars.MYAPP_IP }} "echo 'Connected to EC2!' && 'bash -s' < ./deployment/deploy.sh MtgCollectionApp"
+        ssh -i ~/.ssh/id_rsa ubuntu@${{ vars.MYAPP_IP }} 'bash -s' < ./deployment/deploy.sh MtgCollectionApp
