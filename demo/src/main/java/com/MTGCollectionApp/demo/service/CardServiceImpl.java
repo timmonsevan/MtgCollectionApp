@@ -7,22 +7,18 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import io.magicthegathering.javasdk.api.CardAPI;
 import io.magicthegathering.javasdk.resource.Card;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriUtils;
-
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 /**
  * service methods for controllers
@@ -56,20 +52,20 @@ public class CardServiceImpl implements CardService {
     public String viewCollection() {
 
         List<DatabaseCard> query = new ArrayList<>(cardDAO.findAll());
-        List<String> collectionList = new ArrayList<>();
+        StringBuilder collectionList = new StringBuilder();
 
         if (query.isEmpty()) {
             return "Collection is empty.";
         }
 
         for (DatabaseCard card : query) {
-            if (card.getQuantity() == 1) {
-                collectionList.add("You have " + card.getQuantity() + " copy of " + card.getName() + " in your collection\n");
-            } else {
-                collectionList.add("You have " + card.getQuantity() + " copies of " + card.getName() + " in your collection\n");
-            }
+            collectionList.append("You have ")
+                    .append(card.getQuantity())
+                    .append(card.getQuantity() == 1 ? " copy" : " copies")
+                    .append(" of ")
+                    .append(card.getName())
+                    .append(" in your collection\n");
         }
-
         return collectionList.toString();
     }
 
@@ -104,14 +100,15 @@ public class CardServiceImpl implements CardService {
             }
 
             query = new ArrayList<>(cardDAO.findByName(cardName));
-            List<String> collectionList = new ArrayList<>();
+            StringBuilder collectionList = new StringBuilder();
 
             for (DatabaseCard card : query) {
-                if (card.getQuantity() == 1) {
-                    collectionList.add("You have " + card.getQuantity() + " copy of " + card.getName() + " in your collection\n");
-                } else {
-                    collectionList.add("You have " + card.getQuantity() + " copies of " + card.getName() + " in your collection\n");
-                }
+                collectionList.append("You have ")
+                        .append(card.getQuantity())
+                        .append(card.getQuantity() == 1 ? " copy" : " copies")
+                        .append(" of ")
+                        .append(card.getName())
+                        .append(" in your collection\n");
             }
             return collectionList.toString();
         } else {
@@ -240,6 +237,7 @@ public class CardServiceImpl implements CardService {
                 Type cardListType = new TypeToken<List<Card>>() {
                 }.getType();
                 cards = new Gson().fromJson(cardsArray, cardListType);
+
             }
 
             for (Card card : cards) {
