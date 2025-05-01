@@ -20,7 +20,7 @@ public class CardServiceImpl implements CardService {
 
     private final CardDAO cardDAO;
 
-    private final List<Card> cards = CardAPI.getAllCards();
+    // private final List<Card> cards = CardAPI.getAllCards();
 
     @Autowired
     public CardServiceImpl(CardDAO theCardDAO) {
@@ -115,6 +115,8 @@ public class CardServiceImpl implements CardService {
     public String addNewCard(String cardName, String numCards) throws ClassNotFoundException {
 
         int quantity;
+        List<String> filters = new ArrayList<>();
+        filters.add(cardName);
 
         if (cardName != null && numCards != null) {
 
@@ -146,6 +148,8 @@ public class CardServiceImpl implements CardService {
             }
 
             try {
+                List<Card> cards = CardAPI.getAllCards(filters);
+
                 for (Card card : cards) {
                     if (card.getName().equalsIgnoreCase(cardName) && card.getMultiverseid() > 0) {
                         DatabaseCard tempDatabaseCard = new DatabaseCard(card, quantity);
@@ -172,6 +176,8 @@ public class CardServiceImpl implements CardService {
     public String addNewCard(String cardName, String numCards, String set) throws ClassNotFoundException {
 
         int quantity;
+        List<String> filters = new ArrayList<>();
+        filters.add(cardName);
 
         if (cardName != null && numCards != null && set != null) {
 
@@ -203,6 +209,8 @@ public class CardServiceImpl implements CardService {
             } catch (Exception ignored) {
             }
 
+            List<Card> cards = CardAPI.getAllCards(filters);
+
             for (Card card : cards) {
                 if (card.getName().equalsIgnoreCase(cardName) && card.getSet().equalsIgnoreCase(set)) {
                     DatabaseCard tempDatabaseCard = new DatabaseCard(card, quantity);
@@ -227,6 +235,8 @@ public class CardServiceImpl implements CardService {
     public String updateCard(String cardName, String numCards) throws ClassNotFoundException {
 
         int quantity;
+        List<String> filters = new ArrayList<>();
+        filters.add(cardName);
 
         if (cardName != null && numCards != null) {
 
@@ -255,6 +265,8 @@ public class CardServiceImpl implements CardService {
             query = new ArrayList<>(cardDAO.findByName(cardName));
 
             try {
+                List<Card> cards = CardAPI.getAllCards(filters);
+
                 for (DatabaseCard databaseCard : query) {
                     if (databaseCard.getName().equalsIgnoreCase(cardName)) {
                         for (Card card : cards) {
@@ -287,6 +299,8 @@ public class CardServiceImpl implements CardService {
     public String updateCard(String cardName, String numCards, String set) throws ClassNotFoundException {
 
         int quantity;
+        List<String> filters = new ArrayList<>();
+        filters.add(cardName);
 
         if (cardName != null && numCards != null && set != null) {
 
@@ -315,6 +329,8 @@ public class CardServiceImpl implements CardService {
             query = new ArrayList<>(cardDAO.findByName(cardName));
 
             try {
+                List<Card> cards = CardAPI.getAllCards(filters);
+
                 for (DatabaseCard databaseCard : query) {
                     if (databaseCard.getName().equalsIgnoreCase(cardName)) {
                         for (Card card : cards) {
@@ -347,6 +363,9 @@ public class CardServiceImpl implements CardService {
     @Transactional
     public String removeCardFromCollection(String cardName) {
 
+        List<String> filters = new ArrayList<>();
+        filters.add(cardName);
+
         if (cardName != null) {
 
             if (cardName.isBlank() || cardName.isEmpty()) {
@@ -364,6 +383,8 @@ public class CardServiceImpl implements CardService {
             query = new ArrayList<>(cardDAO.findByName(cardName));
 
             try {
+                List<Card> cards = CardAPI.getAllCards(filters);
+
                 for (DatabaseCard databaseCard : query) {
                     if (databaseCard.getName().equalsIgnoreCase(cardName)) {
                         for (Card card : cards) {
