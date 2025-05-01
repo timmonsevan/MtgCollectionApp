@@ -1,0 +1,17 @@
+[Unit]
+Description=Webhook service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/webhook -hooks /home/ubuntu/MtgCollectionApp/deployment/hooks.json -verbose -ip 0.0.0.0 -port 9000
+WorkingDirectory=/home/ubuntu
+Restart=always
+User=ubuntu
+Group=ubuntu
+Environment="PATH=/usr/bin:/usr/local/bin"
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=webhook
+
+[Install]
+WantedBy=multi-user.target
