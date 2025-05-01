@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   mysql:
-    image: mysql:5.7
+    image: mysql:latest
     environment:
       MYSQL_ROOT_PASSWORD: root$IX66
       MYSQL_DATABASE: mtg_collection_tracker_db
@@ -15,7 +15,7 @@ services:
   spring-boot-app:
     image: timmonsevan/timmons-ceg3120:latest
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/mydb
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/mtg_collection_tracker_db
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root$IX66
     depends_on:
