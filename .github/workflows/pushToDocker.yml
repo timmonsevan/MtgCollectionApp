@@ -48,9 +48,9 @@ jobs:
         # Private key required to access the host
         private-key: ${{ secrets.MYAPP_KEY }}
         # Hostname or IP to add to the known hosts file
-        known-hosts: ${{ variables.MYAPP_IP }}
+        known-hosts: ${{ vars.MYAPP_IP }}
 
     - name: Run deploy script on remote server
       run: |
-        ssh -o StrictHostKeyChecking=no ubuntu@52.204.172.93 \
+        ssh -o StrictHostKeyChecking=no ubuntu@${{ vars.MYAPP_IP }} \
         'bash -s' < ./deployment/deploy.sh MtgCollectionApp
