@@ -18,6 +18,7 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.net.URLEncoder;
 
 
 /**
@@ -123,10 +124,10 @@ public class CardServiceImpl implements CardService {
      */
     @Override
     @Transactional
-    public String addNewCard(String cardName, String numCards) throws ClassNotFoundException, ClassCastException {
+    public String addNewCard(String cardName, String numCards) throws ClassNotFoundException {
 
         int quantity;
-        String url = "https://api.magicthegathering.io/v1/cards?name=" + UriUtils.encode(cardName, StandardCharsets.UTF_8);
+        String url = "https://api.magicthegathering.io/v1/cards?name=" + URLEncoder.encode(cardName, StandardCharsets.UTF_8);
 
         if (cardName != null && numCards != null) {
 
@@ -195,7 +196,7 @@ public class CardServiceImpl implements CardService {
     public String addNewCard(String cardName, String numCards, String set) throws ClassNotFoundException {
 
         int quantity;
-        String url = "https://api.magicthegathering.io/v1/cards?name=" + UriUtils.encode(cardName, StandardCharsets.UTF_8);
+        String url = "https://api.magicthegathering.io/v1/cards?name=" + URLEncoder.encode(cardName, StandardCharsets.UTF_8);
 
         if (cardName != null && numCards != null && set != null) {
 
@@ -264,7 +265,7 @@ public class CardServiceImpl implements CardService {
     public String updateCard(String cardName, String numCards) throws ClassNotFoundException {
 
         int quantity;
-        String url = "https://api.magicthegathering.io/v1/cards?name=" + UriUtils.encode(cardName, StandardCharsets.UTF_8);
+        String url = "https://api.magicthegathering.io/v1/cards?name=" + URLEncoder.encode(cardName, StandardCharsets.UTF_8);
 
         if (cardName != null && numCards != null) {
 
@@ -337,7 +338,7 @@ public class CardServiceImpl implements CardService {
     public String updateCard(String cardName, String numCards, String set) throws ClassNotFoundException {
 
         int quantity;
-        String url = "https://api.magicthegathering.io/v1/cards?name=" + UriUtils.encode(cardName, StandardCharsets.UTF_8);
+        String url = "https://api.magicthegathering.io/v1/cards?name=" + URLEncoder.encode(cardName, StandardCharsets.UTF_8);
 
         if (cardName != null && numCards != null && set != null) {
 
@@ -410,7 +411,7 @@ public class CardServiceImpl implements CardService {
     @Transactional
     public String removeCardFromCollection(String cardName) {
 
-        String url = "https://api.magicthegathering.io/v1/cards?name=" + UriUtils.encode(cardName, StandardCharsets.UTF_8);
+        String url = "https://api.magicthegathering.io/v1/cards?name=" + URLEncoder.encode(cardName, StandardCharsets.UTF_8);
 
         if (cardName != null) {
 
