@@ -47,7 +47,7 @@ jobs:
         mkdir -p ~/.ssh
         echo "${{ secrets.MYAPP_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ vars.MYAPP_IP }}.compute.amazonaws.com >> ~/.ssh/known_hosts
+        ssh-keyscan -H ${{ vars.MYAPP_IP }} >> ~/.ssh/known_hosts
 
     - name: SSH into EC2 and run commands
       run: |
