@@ -20,8 +20,6 @@ public class CardServiceImpl implements CardService {
 
     private final CardDAO cardDAO;
 
-    // private final List<Card> cards = CardAPI.getAllCards();
-
     @Autowired
     public CardServiceImpl(CardDAO theCardDAO) {
         this.cardDAO = theCardDAO;
