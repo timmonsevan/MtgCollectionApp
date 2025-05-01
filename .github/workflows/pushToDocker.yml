@@ -42,15 +42,13 @@ jobs:
         push: true
         tags: ${{ steps.meta.outputs.tags }}, ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120:latest
 
-    - name: Setup SSH key
-      uses: volodymyr-borodin/setup-ssh-key@v1
-      with:
-        # Private key required to access the host
-        private-key: ${{ secrets.MYAPP_KEY }}
-        # Hostname or IP to add to the known hosts file
-        known-hosts: ${{ vars.MYAPP_IP }}
-
-    - name: Run deploy script on remote server
+    - name: Set up SSH
       run: |
-        ssh -o StrictHostKeyChecking=no ubuntu@${{ vars.MYAPP_IP }} \
-        'bash -s' < ./deployment/deploy.sh MtgCollectionApp
+        mkdir -p ~/.ssh
+        echo "${{ secrets.MYAPP_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ vars.MYAPP_IP }}.compute.amazonaws.com >> ~/.ssh/known_hosts
+
+    - name: SSH into EC2 and run commands
+      run: |
+        ssh -i ~/.ssh/id_rsa ubuntu@${{ vars.MYAPP_IP }}.compute.amazonaws.com "echo 'Connected to EC2!' && 'bash -s' < ./deployment/deploy.sh MtgCollectionApp"
