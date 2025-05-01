@@ -1,9 +1,10 @@
-
 name: CI
 
 on:
   workflow_dispatch:
   push:
+    branches:
+      - "main"
     tags: 
       - "*"
 env:
@@ -42,3 +43,16 @@ jobs:
         file: ./demo/Dockerfile
         push: true
         tags: ${{ steps.meta.outputs.tags }}, ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120:latest
+
+    - name: Setup SSH key
+      uses: volodymyr-borodin/setup-ssh-key@v1
+      with:
+        # Private key required to access the host
+        private-key: ${{ secrets.MYAPP_KEY }}
+        # Hostname or IP to add to the known hosts file
+        known-hosts: ${{ variables.MYAPP_IP }}
+
+    - name: Run deploy script on remote server
+      run: |
+        ssh -o StrictHostKeyChecking=no ubuntu@${{ variables.MYAPP_IP }} \
+        'bash -s' < ./deployment/deploy.sh MtgCollectionApp
