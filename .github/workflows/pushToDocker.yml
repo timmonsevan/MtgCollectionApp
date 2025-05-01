@@ -40,8 +40,10 @@ jobs:
       with: 
         file: ./demo/Dockerfile
         push: true
-        tags: ${{ steps.meta.outputs.tags }}, ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120:latest
-
+        tags: |
+          ${{ steps.meta.outputs.tags }}
+          ${{ secrets.DOCKER_USERNAME }}/timmons-ceg3120:latest
+          
     - name: Set up SSH
       run: |
         mkdir -p ~/.ssh
@@ -51,4 +53,6 @@ jobs:
 
     - name: SSH into EC2 and run commands
       run: |
-        ssh -i ~/.ssh/id_rsa ubuntu@${{ vars.MYAPP_IP }} 'bash -s' < ./deployment/deploy.sh MtgCollectionApp
+        run: |
+        scp -i ~/.ssh/id_rsa ./deployment/deploy.sh ubuntu@${{ vars.MYAPP_IP }}:/tmp/deploy.sh
+        ssh -i ~/.ssh/id_rsa ubuntu@${{ vars.MYAPP_IP }} "bash /tmp/deploy.sh MtgCollectionApp"
