@@ -1,0 +1,28 @@
+[
+    {
+      "id": "deploy-container",
+      "execute-command": "/home/ubuntu/MtgCollectionApp/deployment/deploy.sh",
+      "command-working-directory": "/home/ubuntu/MtgCollectionApp",
+      "pass-arguments-to-command": [
+        {
+          "source": "payload",
+          "name": "repository.name"
+        }
+      ],
+      "response-message": "Deployment triggered.",
+      "trigger-rule": {
+        "and": [
+          {
+            "match": {
+              "type": "payload-hmac-sha256",
+              "secret": "your-shared-secret",
+              "parameter": {
+                "source": "header",
+                "name": "X-Hub-Signature-256"
+                        }
+                    }
+                }  
+            ]
+        }
+    }
+]
