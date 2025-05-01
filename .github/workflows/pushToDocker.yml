@@ -53,6 +53,5 @@ jobs:
 
     - name: SSH into EC2 and run commands
       run: |
-        run: |
         scp -i ~/.ssh/id_rsa ./deployment/deploy.sh ubuntu@${{ vars.MYAPP_IP }}:/tmp/deploy.sh
         ssh -i ~/.ssh/id_rsa ubuntu@${{ vars.MYAPP_IP }} "bash /tmp/deploy.sh MtgCollectionApp"
