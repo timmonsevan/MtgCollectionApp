@@ -52,5 +52,5 @@ jobs:
 
     - name: Run deploy script on remote server
       run: |
-        ssh -o StrictHostKeyChecking=no ubuntu@${{ variables.MYAPP_IP }} \
+        ssh -o StrictHostKeyChecking=no ubuntu@52.204.172.93 \
         'bash -s' < ./deployment/deploy.sh MtgCollectionApp
