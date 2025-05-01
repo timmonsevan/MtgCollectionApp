@@ -1,9 +1,11 @@
-demo/src/main/resources/secrets.properties
+/src/main/resources/secrets.properties
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+
+
 
 ### STS ###
 .apt_generated
