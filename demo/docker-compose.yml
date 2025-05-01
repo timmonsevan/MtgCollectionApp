@@ -4,29 +4,51 @@ services:
   mysql:
     image: mysql:latest
     environment:
-      MYSQL_ROOT_PASSWORD: root$IX66
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: mtg_collection_tracker_db
     networks:
       - app-network
     deploy:
       placement:
         constraints: [node.role == manager]
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./my.cnf:/etc/mysql/my.cnf
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   app:
     image: timmonsevan/timmons-ceg3120:latest
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/mtg_collection_tracker_db
+      SPRING_DATASOURCE_URL: jdbc:mysql://172.18.0.57:3306/mtg_collection_tracker_db
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root$IX66
-    depends_on:
-      - mysql
+      SPRING_DATASOURCE_PASSWORD: root
+      JAVA_OPTS: -Xms256m -Xmx1024m
+      MYSQL_HOST: 172.18.0.57
+      MYSQL_PORT: 3306
+      MYSQL_ROOT_PASSWORD: root
     networks:
       - app-network
     deploy:
       replicas: 1
       placement:
         constraints: [node.role == worker]
+    ports:
+      - "0.0.0.0:5000:5000"
+    command: >
+      sh -c "
+      until nc -z mysql 3306;
+      do
+        echo 'Waiting for MySQL...';
+        sleep 3;
+      done;
+      java -Xmx2G -jar app.jar"
 
 networks:
   app-network:
     driver: overlay
+    external: true
